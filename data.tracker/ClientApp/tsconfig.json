@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "module": "es6",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "declaration": false,
+    "noImplicitReturns": false,
+    "removeComments": true,
+    "strictNullChecks": false,
+    "outDir": "./build/",
+    "noImplicitAny": false,
+    "target": "es6",
+    "jsx": "react",
+    "allowJs": true,
+    "lib": [
+      "es2016",
+      "dom"
+    ]
+  },
+  "exclude": [
+    "build",
+    "node_modules"
+  ]
+}
