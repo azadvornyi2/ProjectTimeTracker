@@ -23,7 +23,7 @@ namespace data.tracker.Controllers.TimeTracking
         {
             try
             {
-                return Ok(SuccessResponseBody(await _timeTrackingService.Register(time)));
+                return Ok(SuccessResponseBody(await _timeTrackingService.Register(time),"Time registered successfuly."));
             }
             catch (Exception ex)
             {
@@ -35,9 +35,12 @@ namespace data.tracker.Controllers.TimeTracking
         [AssignActionRoute(TimeTrackingSegments.UPDATE)]
         public async Task<IActionResult> Update([FromBody] TimeRegister time)
         {
+            string message;
+            if (time.Deleted) message = "Time registration deleted successfuly.";
+            else message = "Time registration updated successfuly.";
             try
             {
-                return Ok(SuccessResponseBody(await _timeTrackingService.Update(time)));
+                return Ok(SuccessResponseBody(await _timeTrackingService.Update(time), message));
             }
             catch (Exception ex)
             {

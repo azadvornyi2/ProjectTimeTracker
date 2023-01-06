@@ -4,9 +4,9 @@ namespace service.tracker.Services.TimeTracking.Contracts
 {
     public interface ITimeTrackingService
     {
-        Task<TimeRegister> Register(TimeRegister time);
+        Task<IEnumerable<TimeRegister>> Register(TimeRegister time);
 
-        Task<TimeRegister> Update(TimeRegister time);
+        Task<IEnumerable<TimeRegister>> Update(TimeRegister time);
 
         Task<TimeRegister> Get(Guid projectNetId);
 

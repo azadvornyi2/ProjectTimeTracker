@@ -26,7 +26,8 @@ namespace data.tracker.Controllers.Projects
         {
             try
             {
-                return Ok(SuccessResponseBody(await _projectService.Add(project)));
+
+                return Ok(SuccessResponseBody(await _projectService.Add(project),"Project successfuly created."));
             }
             catch (Exception ex)
             {
@@ -39,9 +40,12 @@ namespace data.tracker.Controllers.Projects
         [AssignActionRoute(ProjectSegments.UPDATE)]
         public async Task<IActionResult> Update([FromBody] Project project)
         {
+            string message = string.Empty;
             try
             {
-                return Ok(SuccessResponseBody(await _projectService.Update(project)));
+                if (!project.Deleted) message = "Project successfuly updated.";
+                else message = "Project successfuly deleted.";
+                return Ok(SuccessResponseBody(await _projectService.Update(project), message));
             }
             catch (Exception ex)
             {
@@ -52,7 +56,7 @@ namespace data.tracker.Controllers.Projects
 
         [HttpPost]
         [AssignActionRoute(ProjectSegments.REMOVE)]
-        public async Task<IActionResult> Update([FromQuery] Guid netId)
+        public async Task<IActionResult> Delete([FromQuery] Guid netId)
         {
             try
             {

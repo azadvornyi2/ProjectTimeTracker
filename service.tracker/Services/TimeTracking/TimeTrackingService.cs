@@ -25,11 +25,11 @@ namespace service.tracker.Services.TimeTracking
             Task.Run(() =>
             _timeRepository.GetAll());
 
-        public Task<TimeRegister> Register(TimeRegister time) =>
+        public Task<IEnumerable<TimeRegister>> Register(TimeRegister time) =>
             Task.Run(() =>
             {
-                long timeId = _timeRepository.Register(time);
-                return _timeRepository.GetById(timeId);
+                _timeRepository.Register(time);
+                return _timeRepository.GetAll();
             });
 
         public Task Remove(Guid projectNetId) =>
@@ -37,11 +37,11 @@ namespace service.tracker.Services.TimeTracking
             _timeRepository.Remove(projectNetId));
 
 
-        public Task<TimeRegister> Update(TimeRegister time) =>
+        public Task<IEnumerable<TimeRegister>> Update(TimeRegister time) =>
             Task.Run(() =>
             {
                 _timeRepository.Update(time);
-                return _timeRepository.GetByNetId(time.NetUid);
+                return _timeRepository.GetAll();
             });
         
 

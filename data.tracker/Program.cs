@@ -39,6 +39,9 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddControllers()
+    .AddJsonOptions(opt => opt.JsonSerializerOptions.PropertyNamingPolicy = null);
+
 builder.Services.AddTransient<IProjectRepositoryFactory, ProjectRepositoryFactory>();
 builder.Services.AddTransient<IRegisteredTimeRepositoryFactory, RegisteredTimeRepositoryFactory>();
 

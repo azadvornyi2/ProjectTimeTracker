@@ -1,44 +1,63 @@
 import * as React from "react";
-import { AppBar, Box, Container, Divider, IconButton, MenuItem, Toolbar, Typography } from "@material-ui/core";
-import FolderIcon from '@mui/icons-material/Folder';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import ProjectsPage from "../Projects/ProjectsPage";
-import { TimeTrackingPage } from "../TimeTracking/TimeTrackingPage";
-import { NavLink, Route } from "react-router-dom";
+import {
+  AppBar,
+  Divider,
+  MenuItem,
+  Toolbar,
+  Typography,
+} from "@material-ui/core";
+import { NavLink } from "react-router-dom";
+import AvTimerIcon from "@mui/icons-material/AvTimer";
+import { Button } from "@mui/material";
+import BookmarksIcon from "@mui/icons-material/Bookmarks";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 const Header: React.FC = (props: any) => {
-    return (
-        <React.Fragment>
-            <AppBar>
-                <Toolbar>
-                    <div>
-                    <Typography 
-                    variant="h6"
-                    component="span">
-                         <IconButton color="inherit">
-                        <AccessTimeIcon/>
-                    </IconButton>
-                    Time Tracker
-                    </Typography>
-                    </div>
-                    <Divider/>
-                    <div className="header_buttons_container">
-                    <MenuItem>
-                    <NavLink  to = "/projects" activeStyle={{
-      fontWeight: 'bold',
-      color: 'red'
-    }}>  
-                      <Typography>PROJECTS</Typography> </NavLink>
-                    </MenuItem>
-                    <MenuItem>
-                    <NavLink to = "/time">  
-                      <Typography>REPORTS</Typography> </NavLink>
-                    </MenuItem>
-                    </div>
-                </Toolbar>
-            </AppBar>
-        </React.Fragment>
-    )
+  return (
+    <React.Fragment>
+      <AppBar className="header">
+        <Toolbar className="header">
+          <div>
+            <Typography variant="h6" component="span" className="header_label">
+              Time Tracker
+            </Typography>
+          </div>
+          <Divider />
+
+          <div className="header_buttons_container">
+            <NavLink
+              to="/projects"
+              color="white"
+              className="nav_link_component"
+              activeClassName="nav_link_component_active"
+            >
+              <Button
+                color="inherit"
+                startIcon={<BookmarksIcon />}
+                size="large"
+              >
+                PROJECTS
+              </Button>
+            </NavLink>
+            <NavLink
+              to="/time"
+              color="white"
+              className="nav_link_component"
+              activeClassName="nav_link_component_active"
+            >
+              <Button
+                color="inherit"
+                startIcon={<AccessTimeIcon />}
+                size="large"
+              >
+                TRACKING
+              </Button>
+            </NavLink>
+          </div>
+        </Toolbar>
+      </AppBar>
+    </React.Fragment>
+  );
 };
 
 export default Header;

@@ -12,6 +12,8 @@ namespace domain.tracker.Entitites.TimeTracking
 
         public long ProjectId { get; set; }
 
+        public string ProjectName { get; set; } = string.Empty;
+
         public string? Notes { get; set; }
 
         public Project Project { get; set; }

@@ -17,9 +17,13 @@ namespace domain.tracker.Repositories.TimeTracking
 
         public IEnumerable<TimeRegister> GetAll() =>
             _connection.Query<TimeRegister>(
-                "SELECT *, " +
-                "DATEDIFF(HH, [RegisteredTime].Starts, [RegisteredTime].Ends) [Duration] " +
+                "SELECT [RegisteredTime].*," +
+                "[Project].Name AS [ProjectName], " +
+                "DATEDIFF(HH, [RegisteredTime].Starts, [RegisteredTime].Ends) AS [Duration] " +
                 "FROM [RegisteredTime] " +
+                "LEFT JOIN [Project] ON " +
+                "[Project].ID = [RegisteredTime].ProjectId " +
+                "AND [Project].Deleted = 0 " +
                 "WHERE [RegisteredTime].Deleted = 0");
 
         public TimeRegister GetById(long id) =>
@@ -65,10 +69,11 @@ namespace domain.tracker.Repositories.TimeTracking
             _connection.Execute(
                 "UPDATE [RegisteredTime] " +
                 "SET [RegisteredTime].Updated = GETUTCDATE(), " +
-                "[RegisteredTime].Stats = @Starts, " +
-                "[RegisteredTime].End = @End, " +
+                "[RegisteredTime].Starts = @Starts, " +
+                "[RegisteredTime].Ends = @Ends, " +
                 "[RegisteredTime].ProjectId = @ProjectId, " +
-                "[RegisteredTime].Notes = @Notes " +
+                "[RegisteredTime].Notes = @Notes, " +
+                "[RegisteredTime].Deleted = @Deleted " +
                 "WHERE [RegisteredTime].ID = @Id ", time);
 
         public IEnumerable<TimeRegister> GetAllByProjectNetId(Guid projectnetId) =>
