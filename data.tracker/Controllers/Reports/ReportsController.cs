@@ -23,7 +23,8 @@ namespace data.tracker.Controllers.Reports
         {
             try
             {
-                return Ok(SuccessResponseBody(await _reportService.OneProjectReport(projectNetId)));
+                string message = "Report generated successfully.";
+                return Ok(SuccessResponseBody(await _reportService.OneProjectReport(projectNetId), message));
             }
             catch (Exception ex)
             {
@@ -34,11 +35,12 @@ namespace data.tracker.Controllers.Reports
 
         [HttpGet]
         [AssignActionRoute(ReportsSegments.GET_RANGE_PROJECT_HOURS)]
-        public async Task<IActionResult> GetRangeHoursByOneProject([FromBody] Guid projectNetId, DateTime start, DateTime end)
+        public async Task<IActionResult> GetRangeHoursByOneProject([FromQuery] Guid projectNetId, DateTime start, DateTime end)
         {
             try
             {
-                return Ok(SuccessResponseBody(await _reportService.OneProjectReportWithTimeFrames(projectNetId, start, end)));
+                string message = "Report generated successfully.";
+                return Ok(SuccessResponseBody(await _reportService.OneProjectReportWithTimeFrames(projectNetId, start, end), message));
             }
             catch (Exception ex)
             {
@@ -49,11 +51,12 @@ namespace data.tracker.Controllers.Reports
 
         [HttpGet]
         [AssignActionRoute(ReportsSegments.GET_RANGE_HOURS)]
-        public async Task<IActionResult> GetRangeHours([FromBody]DateTime start, DateTime end)
+        public async Task<IActionResult> GetRangeHours([FromQuery] DateTime start, DateTime end)
         {
             try
             {
-                return Ok(SuccessResponseBody(await _reportService.ReportWithTimeFrames(start, end)));
+                string message = "Report generated successfully."; 
+                return Ok(SuccessResponseBody(await _reportService.ReportWithTimeFrames(start, end), message));
             }
             catch (Exception ex)
             {

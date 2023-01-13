@@ -17,11 +17,12 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import * as Yup from "yup";
 import { Project } from "../../../models/entities/Projects/Project";
-import { IAppState, TimeRegister } from "../../../models";
+import { IAppState, TimeDifference, TimeRegister } from "../../../models";
 import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
 import { CalculateHoursDifference } from "../../../helpers";
 import { trackedTimeActions } from "../../../store/reducers/timeTrackingReducer";
 import { List } from "linq-typescript";
+import { timeDifferenceActions } from "../../../store/reducers";
 
 interface IProps {
   timeRegister: TimeRegister;
@@ -34,22 +35,21 @@ export const TimeTrackingModal = (props: IProps) => {
   const [validation, setValidation] = React.useState<boolean>(false);
   const dispatch = useDispatch();
 
-  const [valueStartDate, setValueStartDate] = React.useState<Date>(new Date());
-  const [valueEndDate, setValueEndDate] = React.useState(new Date());
-  const [timeDifference, setTimeDifference] = React.useState(0);
-  const [timeRegister, setTimeRegister] = React.useState<TimeRegister>(new TimeRegister)
-
-  React.useEffect(() => {
-    setTimeDifference(CalculateHoursDifference(valueStartDate, valueEndDate));
-  }, [valueStartDate, valueEndDate]);
+  const [valueStartDate, setValueStartDate] = React.useState(
+    new Date().toISOString()
+  );
+  const [valueEndDate, setValueEndDate] = React.useState(
+    new Date().toISOString()
+  );
 
   const setStartDate = (start: any) => {
     if (!start || start === "") return;
-    else setValueStartDate(start);
+    else {
+      setValueStartDate(start);
+    }
   };
 
   const setEndDate = (end: any) => {
-    debugger;
     if (!end || end === "") return;
     else setValueEndDate(end);
   };
@@ -58,20 +58,13 @@ export const TimeTrackingModal = (props: IProps) => {
     (state) => state.projects.projects
   );
 
+  const difference = useSelector<IAppState, number>(
+    (state) => state.timeDifference.timeDifference
+  );
+
   React.useEffect(() => {
     dispatch(projectsActions.getAllProjectsRequest_api());
   }, []);
-
-  React.useEffect(() => {
-    debugger;
-    if (props.timeRegister.Starts && props.timeRegister.Ends) {
-      setValueStartDate(props.timeRegister.Starts);
-      setValueEndDate(props.timeRegister.Ends);
-    }
-    dispatch(projectsActions.getAllProjectsRequest_api());
-  }, [props.timeRegister]);
-
-  let _timeRegister: TimeRegister = props.timeRegister;
 
   const validationSchema = Yup.object().shape({
     starts: Yup.date()
@@ -89,11 +82,19 @@ export const TimeTrackingModal = (props: IProps) => {
     notes: Yup.string().required("Notes is required"),
   });
 
+  const OnFormClosing = () => {
+    props.closeModal();
+    dispatch(timeDifferenceActions.setHoursDifference(0));
+    setStartDate(new Date().toISOString());
+    setEndDate(new Date().toISOString());
+    setValidation(false);
+  };
+
   return (
     <>
       <Modal
         open={props.openModal}
-        onClose={() => props.closeModal()}
+        onClose={() => OnFormClosing()}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         className="modal_container"
@@ -124,27 +125,20 @@ export const TimeTrackingModal = (props: IProps) => {
             }
             onSubmit={(values) => {
               setValidation(false);
-              setTimeRegister(...timeRegister, new TimeRegister: {
-              })
-
-
-              if (!props.isNew) {
-                debugger;
-                let _data = {
-                  ...values,
-                  ...ProjectId: values.project.Id,
-                };
-                props.closeModal();
-                dispatch(
-                  trackedTimeActions.updateRegiseredTimeRequest_api(_data)
-                );
+              const data = Object.assign({}, props.timeRegister, {
+                Starts: values.starts,
+                Ends: values.ends,
+                ProjectId: values.project.Id,
+                Notes: values.notes,
+              } as TimeRegister);
+              if (props.isNew) {
+                dispatch(trackedTimeActions.registerTimeRequest_api(data));
               } else {
-                let _data = {
-                  ...values,
-                };
-                props.closeModal();
-                dispatch(trackedTimeActions.registerTimeRequest_api(_data));
+                dispatch(
+                  trackedTimeActions.updateRegiseredTimeRequest_api(data)
+                );
               }
+              props.closeModal();
             }}
           >
             {({ errors, touched, values, setFieldValue }) => (
@@ -154,10 +148,10 @@ export const TimeTrackingModal = (props: IProps) => {
                   <TextField
                     fullWidth
                     label="Start time"
-                    name="Starts"
+                    name="starts"
                     defaultValue={values.starts}
                     onChange={(e: any) => {
-                      setFieldValue("Starts", e.target.value),
+                      setFieldValue("starts", e.target.value),
                         setStartDate(e.target.value);
                     }}
                     type="datetime-local"
@@ -181,7 +175,7 @@ export const TimeTrackingModal = (props: IProps) => {
                   <TextField
                     fullWidth
                     label="End time"
-                    name="Ends"
+                    name="ends"
                     type="datetime-local"
                     error={errors.ends ? true : false}
                     helperText={
@@ -194,7 +188,7 @@ export const TimeTrackingModal = (props: IProps) => {
                     disabled={false}
                     defaultValue={values.ends}
                     onChange={(e: any) => {
-                      setFieldValue("Ends", e.target.value),
+                      setFieldValue("ends", e.target.value),
                         setEndDate(e.target.value);
                     }}
                     variant="outlined"
@@ -246,7 +240,7 @@ export const TimeTrackingModal = (props: IProps) => {
                     error={errors.notes ? true : false}
                     rows={4}
                     label="Notes"
-                    name="Notes"
+                    name="notes"
                     helperText={
                       errors.notes ? (
                         <div className="error">{errors.notes}</div>
@@ -257,14 +251,12 @@ export const TimeTrackingModal = (props: IProps) => {
                     disabled={false}
                     variant="outlined"
                     defaultValue={values.notes}
-                    onChange={(e) =>
-                      setFieldValue("description", e.target.value)
-                    }
+                    onChange={(e) => setFieldValue("notes", e.target.value)}
                   />
                 </div>
                 <div className="input_container">
                   <Typography id="modal-modal-title" component="div">
-                    {"Duration: " + Math.round(timeDifference) + " hours"}
+                    {"Duration: " + Math.round(difference) + " hours"}
                   </Typography>
                 </div>
                 <div className="modal_buttons_container">
@@ -274,10 +266,7 @@ export const TimeTrackingModal = (props: IProps) => {
                         color="error"
                         variant="text"
                         startIcon={<CloseIcon />}
-                        onClick={() => {
-                          props.closeModal();
-                          setValidation(false);
-                        }}
+                        onClick={() => OnFormClosing()}
                       >
                         {"cancel"}
                       </Button>

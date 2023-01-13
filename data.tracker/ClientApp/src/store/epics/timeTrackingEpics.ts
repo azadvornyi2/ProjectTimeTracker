@@ -12,6 +12,7 @@ import { dispatch } from "rxjs/internal/observable/pairs";
 import { notificationActions } from "../reducers/notificationReducer";
 import { useDispatch } from "react-redux";
 import { of } from "rxjs";
+import { timeDifferenceActions } from "../reducers";
 
 export const getAllTrackedTimeEpic = (action$: AnyAction, state$: any) => {
   return action$.pipe(
@@ -78,6 +79,30 @@ export const registerTimeEpic = (action$: AnyAction, state$: TimeRegister) => {
               notificationActions.getNofitifcation(_p),
               trackedTimeActions.setRegisteredTime(_p)
             );
+          })
+        );
+    })
+  );
+};
+
+export const getHoursDifferenceEpic = (action$: AnyAction, state$: any) => {
+  return action$.pipe(
+    ofType(timeDifferenceActions.calculateHoursDifferenceRequest_api),
+    switchMap((action: AnyAction) => {
+      return ajax
+        .getJSON<number>(
+          API.SERVER_URL +
+            API.TIME_TRACKING_ENDPOINTS.CALCULATE_HOURS_DIFFERENCE(
+              action.payload
+            ) +
+            "",
+          {
+            "Content-Type": "application/json",
+          }
+        )
+        .pipe(
+          map((payload) => {
+            return timeDifferenceActions.setHoursDifference(payload);
           })
         );
     })

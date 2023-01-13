@@ -43,7 +43,12 @@ namespace service.tracker.Services.TimeTracking
                 _timeRepository.Update(time);
                 return _timeRepository.GetAll();
             });
-        
 
+        public Task<double> CaluclateTimeDifference(DateTime start, DateTime end) =>
+            Task.Run(() => {
+                double difference = (end - start).TotalHours;
+                return difference;
+            });
+      
     }
 }

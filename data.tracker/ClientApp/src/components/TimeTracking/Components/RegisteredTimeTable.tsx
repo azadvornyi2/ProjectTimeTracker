@@ -5,10 +5,8 @@ import { useEffect } from "react";
 import { trackedTimeActions } from "../../../store/reducers/timeTrackingReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { IAppState, Project, TimeRegister } from "../../../models";
-import { projectsActions } from "../../../store/reducers/ProjectReducer";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { AddSpendTimeModal } from "./AddSpendTimeModal";
 import { Tooltip } from "@material-ui/core";
 import { TimeRemoveAlert } from "./TimeRemoveAlert";
 import { TimeTrackingModal } from "./TimeTrackingModal";
@@ -27,13 +25,8 @@ const RegisteredTimeTable = () => {
     (state) => state.trackedTime.trackedTime
   );
 
-  const projects = useSelector<IAppState, Project[]>(
-    (state) => state.projects.projects
-  );
-
   useEffect(() => {
     dispatch(trackedTimeActions.getAllRegisteredTimeRequest_api());
-    dispatch(projectsActions.getAllProjectsRequest_api());
   }, []);
 
   useEffect(() => {
@@ -167,12 +160,6 @@ const RegisteredTimeTable = () => {
         openModal={isModalCalled}
         timeRegister={selected}
       />
-      {/* <AddSpendTimeModal
-        projects={projects}
-        isModalCalled={isModalCalled}
-        selected={selected}
-        setIsModalCalled={() => setIsModalCalled(false)}
-      /> */}
     </>
   );
 };

@@ -59,12 +59,12 @@ app.UseCors("Allowed");
 ConfigurationManager.SetAppSettingsProperties(app.Configuration);
 
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
+//Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 //app.UseSpa(spa =>
 //{

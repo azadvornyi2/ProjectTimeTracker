@@ -24,7 +24,8 @@ namespace domain.tracker.Repositories.TimeTracking
                 "LEFT JOIN [Project] ON " +
                 "[Project].ID = [RegisteredTime].ProjectId " +
                 "AND [Project].Deleted = 0 " +
-                "WHERE [RegisteredTime].Deleted = 0");
+                "WHERE [RegisteredTime].Deleted = 0 " +
+                "ORDER BY [RegisteredTime].ENDS DESC ");
 
         public TimeRegister GetById(long id) =>
             _connection.Query<TimeRegister>(
@@ -77,27 +78,24 @@ namespace domain.tracker.Repositories.TimeTracking
                 "WHERE [RegisteredTime].ID = @Id ", time);
 
         public IEnumerable<TimeRegister> GetAllByProjectNetId(Guid projectnetId) =>
-           _connection.Query<TimeRegister, Project, TimeRegister>(
-               "SELECT *, " +
-               "DATEDIFF(HH, [RegisteredTime].Starts, [RegisteredTime].Ends) [Duration] " +
+           _connection.Query<TimeRegister>(
+               "SELECT [RegisteredTime].*, " +
+               "DATEDIFF(HH, [RegisteredTime].Starts, [RegisteredTime].Ends) as [Duration]," +
+               "[Project].Name AS [ProjectName] " +
                "FROM [RegisteredTime] " +
                "LEFT JOIN [Project] ON " +
                "[Project].ID = [RegisteredTime].ProjectId " +
                "AND [Project].Deleted = 0 " +
                "WHERE [Project].NetUID = @NetId " +
                "AND [RegisteredTime].Deleted = 0 ",
-               (timeRegiser, project) =>
-               {
-                   timeRegiser.Project = project;
-                   return timeRegiser;
-               },
                new { NetId = projectnetId }
                );
 
         public IEnumerable<TimeRegister> GetHoursRangeByOneProject(Guid projectnetId, DateTime start, DateTime end) =>
-            _connection.Query<TimeRegister, Project, TimeRegister>(
-               "SELECT *, " +
-               "DATEDIFF(HH, [RegisteredTime].Starts, [RegisteredTime].Ends) [Duration] " +
+            _connection.Query<TimeRegister>(
+               "SELECT [RegisteredTime].*, " +
+               "DATEDIFF(HH, [RegisteredTime].Starts, [RegisteredTime].Ends) [Duration], " +
+               "[Project].Name AS [ProjectName] " +
                "FROM [RegisteredTime] " +
                "LEFT JOIN [Project] ON " +
                "[Project].ID = [RegisteredTime].ProjectId " +
@@ -106,11 +104,6 @@ namespace domain.tracker.Repositories.TimeTracking
                "AND [RegisteredTime].Starts >= @Start " +
                "AND [RegisteredTime].Ends <= @End " +
                "AND [RegisteredTime].Deleted = 0 ",
-               (timeRegiser, project) =>
-               {
-                   timeRegiser.Project = project;
-                   return timeRegiser;
-               },
                new
                {
                    NetId = projectnetId,
@@ -119,21 +112,17 @@ namespace domain.tracker.Repositories.TimeTracking
                });
 
         public IEnumerable<TimeRegister> GetHoursRange(DateTime start, DateTime end) =>
-            _connection.Query<TimeRegister, Project, TimeRegister>(
-               "SELECT *, " +
-               "DATEDIFF(HH, [RegisteredTime].Starts, [RegisteredTime].Ends) [Duration] " +
+            _connection.Query<TimeRegister>(
+               "SELECT [RegisteredTime].*, " +
+               "DATEDIFF(HH, [RegisteredTime].Starts, [RegisteredTime].Ends) [Duration], " +
+               "[Project].Name AS [ProjectName] " +
                "FROM [RegisteredTime] " +
                "LEFT JOIN [Project] ON " +
                "[Project].ID = [RegisteredTime].ProjectId " +
                "AND [Project].Deleted = 0 " +
-               "WHERE [RegisteredTime].Starts = @Start " +
-               "AND [RegisteredTime].Ends = @End " +
+               "WHERE [RegisteredTime].Starts >= @Start " +
+               "AND [RegisteredTime].Ends <= @End " +
                "AND [RegisteredTime].Deleted = 0 ",
-               (timeRegiser, project) =>
-               {
-                   timeRegiser.Project = project;
-                   return timeRegiser;
-               },
                new
                {
                    Start = start,

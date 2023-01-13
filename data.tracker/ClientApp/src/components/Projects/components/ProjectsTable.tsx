@@ -104,7 +104,6 @@ export const ProjectsTable = () => {
     },
   ];
 
-  console.log(projectsTable);
   return (
     <>
       <Box sx={{ height: 750, width: "100%" }}>

@@ -1,8 +1,10 @@
 import { Project } from "../Projects/Project";
+import { TimeRegister } from "../TimeTracking/TimeRegister";
 
 export class Report {
-  public Starts: Date;
-  public Ends: Date;
-  public AllProjects: Boolean;
-  public Project: Project;
+  ReportType: string;
+  ProjectName: string;
+  StartDate: string;
+  EndDate: string;
+  RegisteredTime: TimeRegister[];
 }

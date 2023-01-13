@@ -96,5 +96,20 @@ namespace data.tracker.Controllers.TimeTracking
             }
         }
 
+        [HttpGet]
+        [AssignActionRoute(TimeTrackingSegments.CALCULATE_HOURS_DIFFERENCE)]
+        public async Task<IActionResult> GetHoursDifference([FromQuery] DateTime start, DateTime end)
+        {
+            try
+            {
+                return Ok(await _timeTrackingService.CaluclateTimeDifference(start, end));
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(NLog.LogLevel.Error, ex.Message);
+                return BadRequest(ErrorResponseBody(ex.Message, HttpStatusCode.BadRequest));
+            }
+        }
+
     }
 }

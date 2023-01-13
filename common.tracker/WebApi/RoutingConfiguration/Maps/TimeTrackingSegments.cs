@@ -11,5 +11,7 @@
         public const string GET_ALL = "get/all";
 
         public const string REMOVE = "remove";
+
+        public const string CALCULATE_HOURS_DIFFERENCE = "difference/get"; 
     }
 }

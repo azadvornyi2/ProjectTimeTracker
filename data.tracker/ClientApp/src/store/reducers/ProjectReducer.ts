@@ -19,7 +19,7 @@ const projectsSlice = createSlice({
     updateProjectRequest_api(state, action) {},
 
     RemoveProjectRequest_api(state, action) {},
-    setProjects(state, action: PayloadAction<Project[]>) {
+    setProjects(state, action) {
       state.selectedProject = null;
       state.projects = action.payload.Body;
     },

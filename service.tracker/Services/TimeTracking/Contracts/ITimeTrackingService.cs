@@ -13,5 +13,7 @@ namespace service.tracker.Services.TimeTracking.Contracts
         Task<IEnumerable<TimeRegister>> GetAll();
 
         Task Remove(Guid projectNetId);
+
+        Task<double> CaluclateTimeDifference(DateTime start, DateTime end);
     }
 }
